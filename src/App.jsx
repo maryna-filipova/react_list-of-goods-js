@@ -1,6 +1,6 @@
 import 'bulma/css/bulma.css';
 import './App.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const goodsFromServer = [
   'Dumplings',
@@ -35,32 +35,28 @@ export const App = () => {
 
   const isOriginalOrder = sortType === '' && !isReversed;
 
-  const updateGoods = (newSortType = sortType, newIsReversed = isReversed) => {
-    const sorted = getPreparedGoods([...goodsFromServer], newSortType);
+  useEffect(() => {
+    const sorted = getPreparedGoods([...goodsFromServer], sortType);
 
-    if (newIsReversed) {
+    if (isReversed) {
       sorted.reverse();
     }
 
     setGoods(sorted);
-  };
+  }, [sortType, isReversed]);
 
   const handleSort = newSortType => {
     setSortType(newSortType);
-    updateGoods(newSortType, isReversed);
   };
 
   const handleReverse = () => {
-    const newIsReversed = !isReversed;
-
-    setIsReversed(newIsReversed);
-    updateGoods(sortType, newIsReversed);
+    setIsReversed(prev => !prev);
   };
 
   const handleReset = () => {
-    setGoods([...goodsFromServer]);
     setSortType('');
     setIsReversed(false);
+    setGoods([...goodsFromServer]);
   };
 
   return (
